@@ -1,0 +1,16 @@
+add_library(woh_ito STATIC
+    ito_dummy.cpp
+    ito_dummy.h
+)
+
+target_link_libraries(woh_ito
+    PUBLIC
+        Qt6::Core
+)
+
+target_compile_features(woh_ito PUBLIC cxx_std_20)
+
+target_include_directories(woh_ito
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
