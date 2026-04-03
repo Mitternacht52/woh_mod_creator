@@ -1,6 +1,5 @@
 #pragma once
 
-namespace woh::core
-{
-    void touch();
+namespace woh::core {
+void touch();
 }

@@ -5,9 +5,7 @@
 #include <QAction>
 #include <QWidget>
 
-MainWindow::MainWindow(QWidget *parent) 
-    : QMainWindow(parent) 
-{
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     setWindowTitle("WOH mod creator");
     resize(1000, 700);
 
@@ -15,9 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     createMenus();
 }
 
-void MainWindow::createMenus()
-{
-    auto *fileMenu = menuBar()->addMenu("&File");
+void MainWindow::createMenus() {
+    auto* fileMenu = menuBar()->addMenu("&File");
 
     auto* newAction = fileMenu->addAction("&New");
     auto* openAction = fileMenu->addAction("&Open");

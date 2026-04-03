@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(SmokeTest, BasicSanityCheck)
-{
+TEST(SmokeTest, BasicSanityCheck) {
     EXPECT_TRUE(true);
 }
