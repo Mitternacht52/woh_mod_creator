@@ -1,0 +1,58 @@
+name: Format
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.h'
+      - '**/*.hpp'
+      - '**/*.hh'
+      - '**/*.c'
+      - '**/*.cc'
+      - '**/*.cpp'
+      - '.clang-format'
+      - '.github/workflows/format.yml'
+  pull_request:
+    paths:
+      - '**/*.h'
+      - '**/*.hpp'
+      - '**/*.hh'
+      - '**/*.c'
+      - '**/*.cc'
+      - '**/*.cpp'
+      - '.clang-format'
+      - '.github/workflows/format.yml'
+  workflow_dispatch:
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+
+      - name: Check formatting
+        shell: bash
+        run: |
+          files=$(git ls-files '*.h' '*.hpp' '*.hh' '*.c' '*.cc' '*.cpp')
+          if [ -z "$files" ]; then
+            echo "No C/C++ files to check"
+            exit 0
+          fi
+
+          echo "Checking formatting for:"
+          echo "$files"
+
+          failed=0
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            clang-format --dry-run --Werror "$file" || failed=1
+          done <<< "$files"
+
+          exit $failed
