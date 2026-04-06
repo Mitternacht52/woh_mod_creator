@@ -1,6 +1,6 @@
 add_library(woh_ito STATIC
-    ito_dummy.cpp
-    ito_dummy.h
+    ItoDocument.cpp
+    ItoDocument.h
 )
 
 target_link_libraries(woh_ito
