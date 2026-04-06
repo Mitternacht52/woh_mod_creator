@@ -38,4 +38,4 @@ const ItoSection* ItoDocument::findSection(QStringView name) const noexcept {
     return nullptr;
 }
 
-}
+} // namespace woh::ito
