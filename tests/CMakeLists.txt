@@ -1,5 +1,7 @@
 add_executable(woh_mod_creator_tests
     test_smoke.cpp
+    ito_document_tests.cpp
+    ito_parser_tests.cpp
 )
 
 target_link_libraries(woh_mod_creator_tests
