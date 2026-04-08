@@ -41,15 +41,11 @@ private:
     [[nodiscard]] static bool is_section_line(QStringView line) noexcept;
     [[nodiscard]] static QString parse_section_name(QStringView line);
 
-    [[nodiscard]] static std::optional<ItoField> parse_field_line(
-        QStringView line, 
-        qsizetype line_number, 
-        ItoParseResult& result);
+    [[nodiscard]] static std::optional<ItoField>
+    parse_field_line(QStringView line, qsizetype line_number, ItoParseResult& result);
 
-    [[nodiscard]] static bool parse_quoted_value(
-        QStringView value, 
-        QString& out_value,
-        QString& error_message);
+    [[nodiscard]] static bool parse_quoted_value(QStringView value, QString& out_value,
+                                                 QString& error_message);
 };
 
 } // namespace woh::ito
