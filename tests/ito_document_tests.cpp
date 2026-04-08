@@ -7,10 +7,11 @@ using namespace woh::ito;
 TEST(ItoDocumentTests, FindFieldAndHasFieldWorkForMutableAndConstSection) {
     ItoSection section{
         .name = QStringLiteral("Main"),
-        .fields = {
-            ItoField{.key = QStringLiteral("KeyA"), .value = QStringLiteral("ValueA")},
-            ItoField{.key = QStringLiteral("KeyB"), .value = QStringLiteral("ValueB")},
-        },
+        .fields =
+            {
+                ItoField{.key = QStringLiteral("KeyA"), .value = QStringLiteral("ValueA")},
+                ItoField{.key = QStringLiteral("KeyB"), .value = QStringLiteral("ValueB")},
+            },
     };
 
     ItoField* mutable_field = section.find_field(QStringLiteral("KeyB"));
@@ -28,10 +29,11 @@ TEST(ItoDocumentTests, FindFieldAndHasFieldWorkForMutableAndConstSection) {
 
 TEST(ItoDocumentTests, FindSectionAndHasSectionWorkForMutableAndConstDocument) {
     ItoDocument document{
-        .sections = {
-            ItoSection{.name = QStringLiteral("First"), .fields = {}},
-            ItoSection{.name = QStringLiteral("Second"), .fields = {}},
-        },
+        .sections =
+            {
+                ItoSection{.name = QStringLiteral("First"), .fields = {}},
+                ItoSection{.name = QStringLiteral("Second"), .fields = {}},
+            },
     };
 
     ItoSection* mutable_section = document.find_section(QStringLiteral("Second"));
@@ -49,12 +51,13 @@ TEST(ItoDocumentTests, FindSectionAndHasSectionWorkForMutableAndConstDocument) {
 
 TEST(ItoDocumentTests, ClearRemovesAllSectionsAndMarksDocumentAsEmpty) {
     ItoDocument document{
-        .sections = {
-            ItoSection{
-                .name = QStringLiteral("Section"),
-                .fields = {ItoField{.key = QStringLiteral("K"), .value = QStringLiteral("V")}},
+        .sections =
+            {
+                ItoSection{
+                    .name = QStringLiteral("Section"),
+                    .fields = {ItoField{.key = QStringLiteral("K"), .value = QStringLiteral("V")}},
+                },
             },
-        },
     };
 
     ASSERT_FALSE(document.empty());
@@ -65,4 +68,3 @@ TEST(ItoDocumentTests, ClearRemovesAllSectionsAndMarksDocumentAsEmpty) {
     EXPECT_TRUE(document.empty());
     EXPECT_EQ(document.find_section(QStringLiteral("Section")), nullptr);
 }
-

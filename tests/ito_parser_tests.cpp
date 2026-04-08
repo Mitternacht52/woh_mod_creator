@@ -10,13 +10,11 @@ using namespace woh::ito;
 
 TEST(ItoParserTests, ParseTextParsesSectionsAndFields) {
     const ItoParser parser;
-    const QString input = QStringLiteral(
-        "[Main]\n"
-        "name = \"Alice\"\n"
-        "path=\"C:\\\\mods\\\\example\"\n"
-        "[Other]\n"
-        "flag = \"A \\\"quoted\\\" value\""
-    );
+    const QString input = QStringLiteral("[Main]\n"
+                                         "name = \"Alice\"\n"
+                                         "path=\"C:\\\\mods\\\\example\"\n"
+                                         "[Other]\n"
+                                         "flag = \"A \\\"quoted\\\" value\"");
 
     const ItoParseResult result = parser.parse_text(input);
 
@@ -39,12 +37,10 @@ TEST(ItoParserTests, ParseTextParsesSectionsAndFields) {
 
 TEST(ItoParserTests, ParseTextNormalizesBomAndDifferentLineEndings) {
     const ItoParser parser;
-    const QString input = QStringLiteral(
-        "\uFEFF[Alpha]\r\n"
-        "x = \"1\"\r"
-        "[Beta]\n"
-        "y = \"2\"\r\n"
-    );
+    const QString input = QStringLiteral("\uFEFF[Alpha]\r\n"
+                                         "x = \"1\"\r"
+                                         "[Beta]\n"
+                                         "y = \"2\"\r\n");
 
     const ItoParseResult result = parser.parse_text(input);
 
@@ -80,14 +76,12 @@ TEST(ItoParserTests, ParseTextReportsEmptySectionName) {
 
 TEST(ItoParserTests, ParseTextReportsFieldSyntaxErrors) {
     const ItoParser parser;
-    const QString input = QStringLiteral(
-        "[S]\n"
-        "bad_no_equal\n"
-        " = \"value\"\n"
-        "key = value\n"
-        "bad_quote = \"a\"b\"\n"
-        "bad_escape = \"abc\\\""
-    );
+    const QString input = QStringLiteral("[S]\n"
+                                         "bad_no_equal\n"
+                                         " = \"value\"\n"
+                                         "key = value\n"
+                                         "bad_quote = \"a\"b\"\n"
+                                         "bad_escape = \"abc\\\"");
 
     const ItoParseResult result = parser.parse_text(input);
 
@@ -139,4 +133,3 @@ TEST(ItoParserTests, ParseFileReturnsErrorWhenFileCannotBeOpened) {
     EXPECT_TRUE(result.errors[0].message.startsWith(QStringLiteral("Failed to open file: ")));
     EXPECT_TRUE(result.errors[0].message.endsWith(missing_file));
 }
-
