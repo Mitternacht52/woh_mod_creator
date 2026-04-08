@@ -2,7 +2,7 @@
 
 namespace woh::ito {
 
-ItoField* ItoSection::findField(QStringView key) noexcept {
+ItoField* ItoSection::find_field(QStringView key) noexcept {
     for (auto& field : fields) {
         if (field.key == key) {
             return &field;
@@ -11,7 +11,7 @@ ItoField* ItoSection::findField(QStringView key) noexcept {
     return nullptr;
 }
 
-const ItoField* ItoSection::findField(QStringView key) const noexcept {
+const ItoField* ItoSection::find_field(QStringView key) const noexcept {
     for (const auto& field : fields) {
         if (field.key == key) {
             return &field;
@@ -20,7 +20,7 @@ const ItoField* ItoSection::findField(QStringView key) const noexcept {
     return nullptr;
 }
 
-ItoSection* ItoDocument::findSection(QStringView name) noexcept {
+ItoSection* ItoDocument::find_section(QStringView name) noexcept {
     for (auto& section : sections) {
         if (section.name == name) {
             return &section;
@@ -29,7 +29,7 @@ ItoSection* ItoDocument::findSection(QStringView name) noexcept {
     return nullptr;
 }
 
-const ItoSection* ItoDocument::findSection(QStringView name) const noexcept {
+const ItoSection* ItoDocument::find_section(QStringView name) const noexcept {
     for (const auto& section : sections) {
         if (section.name == name) {
             return &section;

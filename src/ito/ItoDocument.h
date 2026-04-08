@@ -11,7 +11,7 @@ struct ItoField {
     QString key;
     QString value;
 
-    [[nodiscard]] bool isValid() const noexcept {
+    [[nodiscard]] bool is_valid() const noexcept {
         return !key.isEmpty();
     }
 };
@@ -20,7 +20,7 @@ struct ItoSection {
     QString name;
     std::vector<ItoField> fields;
 
-    [[nodiscard]] bool isValid() const noexcept {
+    [[nodiscard]] bool is_valid() const noexcept {
         return !name.isEmpty();
     }
 
@@ -28,11 +28,11 @@ struct ItoSection {
         return fields.empty();
     }
 
-    ItoField* findField(QStringView key) noexcept;
-    const ItoField* findField(QStringView key) const noexcept;
+    ItoField* find_field(QStringView key) noexcept;
+    const ItoField* find_field(QStringView key) const noexcept;
 
-    [[nodiscard]] bool hasField(QStringView key) const noexcept {
-        return findField(key) != nullptr;
+    [[nodiscard]] bool has_field(QStringView key) const noexcept {
+        return find_field(key) != nullptr;
     }
 };
 
@@ -47,11 +47,11 @@ struct ItoDocument {
         sections.clear();
     }
 
-    ItoSection* findSection(QStringView name) noexcept;
-    const ItoSection* findSection(QStringView name) const noexcept;
+    ItoSection* find_section(QStringView name) noexcept;
+    const ItoSection* find_section(QStringView name) const noexcept;
 
-    [[nodiscard]] bool hasSection(QStringView name) const noexcept {
-        return findSection(name) != nullptr;
+    [[nodiscard]] bool has_section(QStringView name) const noexcept {
+        return find_section(name) != nullptr;
     }
 };
 
