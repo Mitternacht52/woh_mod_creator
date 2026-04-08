@@ -171,8 +171,7 @@ ItoParseResult ItoParser::parse_text(QStringView text) const {
                     add_error(result, line_number,
                               QStringLiteral("Field is outside of any section"));
                 } else {
-                    const std::optional<ItoField> field =
-                        parse_field_line(line, line_number, result);
+                    std::optional<ItoField> field = parse_field_line(line, line_number, result);
 
                     if (field.has_value()) {
                         current_section->fields.push_back(std::move(*field));
