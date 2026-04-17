@@ -13,11 +13,11 @@ QString ItoWriter::write_text(const ItoDocument& document) const {
             continue;
         }
 
-        if (out.isEmpty()) {
+        if (!out.isEmpty()) {
             out += QStringLiteral("\n");
-        } 
+        }
 
-        write_section(out, section);        
+        write_section(out, section);
     }
 
     return out;
