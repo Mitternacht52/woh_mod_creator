@@ -29,14 +29,15 @@ void ItoDiagnostics::add(ItoDiagnostic diagnostic) {
 }
 
 void ItoDiagnostics::add(ItoDiagnosticSeverity severity, ItoDiagnosticSource source,
-                         ItoDiagnosticCode code, QString message, 
+                         ItoDiagnosticCode code, QString message,
                          ItoDiagnosticLocation location) {
-    add(ItoDiagnostic{.severity = severity,
-                      .source = source,
-                      .code = std::move(code),
-                      .message = std::move(message),
-                      .location = std::move(location)}
-    );
+    add(ItoDiagnostic{
+        .severity = severity,
+        .source = source,
+        .code = std::move(code),
+        .message = std::move(message),
+        .location = std::move(location),
+    });
 }
 
 void ItoDiagnostics::clear() noexcept {
