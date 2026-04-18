@@ -46,9 +46,8 @@ ItoDocument make_sample_document() {
 void expect_documents_equal(const ItoDocument& actual, const ItoDocument& expected) {
     ASSERT_EQ(actual.sections.size(), expected.sections.size());
 
-    for (qsizetype section_index = 0;
-         section_index < static_cast<qsizetype>(expected.sections.size());
-         ++section_index) {
+    const qsizetype section_count = static_cast<qsizetype>(expected.sections.size());
+    for (qsizetype section_index = 0; section_index < section_count; ++section_index) {
         const ItoSection& actual_section = actual.sections[section_index];
         const ItoSection& expected_section = expected.sections[section_index];
 
