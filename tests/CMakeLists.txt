@@ -1,5 +1,6 @@
 add_executable(woh_mod_creator_tests
     test_smoke.cpp
+    ito_diagnostics_tests.cpp
     ito_document_tests.cpp
     ito_parser_tests.cpp
 )
