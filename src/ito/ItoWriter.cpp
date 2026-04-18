@@ -2,8 +2,7 @@
 
 #include <QFile>
 
-namespace woh::ito 
-{
+namespace woh::ito {
 
 QString ItoWriter::write_text(const ItoDocument& document) const {
     QString out;

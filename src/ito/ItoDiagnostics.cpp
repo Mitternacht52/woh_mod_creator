@@ -29,8 +29,7 @@ void ItoDiagnostics::add(ItoDiagnostic diagnostic) {
 }
 
 void ItoDiagnostics::add(ItoDiagnosticSeverity severity, ItoDiagnosticSource source,
-                         ItoDiagnosticCode code, QString message,
-                         ItoDiagnosticLocation location) {
+                         ItoDiagnosticCode code, QString message, ItoDiagnosticLocation location) {
     add(ItoDiagnostic{
         .severity = severity,
         .source = source,
