@@ -5,6 +5,8 @@ add_library(woh_ito STATIC
     ItoParser.h
     ItoWriter.cpp 
     ItoWriter.h
+    ItoDiagnostics.h
+    ItoDiagnostics.cpp
 )
 
 target_link_libraries(woh_ito
