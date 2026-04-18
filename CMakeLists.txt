@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(WOHModCreator
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "Desktop editor for World of Horror mods"
     LANGUAGES CXX
 )
