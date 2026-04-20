@@ -1,28 +1,19 @@
 #pragma once
 
+#include "ItoDiagnostics.h"
 #include "ItoDocument.h"
 
 #include <QString>
 #include <QStringView>
-#include <vector>
 
 namespace woh::ito {
 
-struct ItoParseError {
-    qsizetype line = 0;
-    QString message;
-
-    [[nodiscard]] bool is_valid() const noexcept {
-        return line >= 0 && !message.isEmpty();
-    }
-};
-
 struct ItoParseResult {
     ItoDocument document;
-    std::vector<ItoParseError> errors;
+    ItoDiagnostics diagnostics;
 
     [[nodiscard]] bool is_ok() const noexcept {
-        return errors.empty();
+        return !diagnostics.has_errors();
     }
 };
 
@@ -32,7 +23,8 @@ public:
     [[nodiscard]] ItoParseResult parse_file(const QString& file_path) const;
 
 private:
-    static void add_error(ItoParseResult& result, qsizetype line, QString message);
+    static void add_error(ItoParseResult& result, qsizetype line, ItoParserDiagnosticCode code,
+                          QString message);
 
     [[nodiscard]] static QString normalize_text(QStringView text);
     [[nodiscard]] static QStringView trim_view(QStringView text) noexcept;
@@ -45,6 +37,7 @@ private:
     parse_field_line(QStringView line, qsizetype line_number, ItoParseResult& result);
 
     [[nodiscard]] static bool parse_quoted_value(QStringView value, QString& out_value,
+                                                 ItoParserDiagnosticCode& error_code,
                                                  QString& error_message);
 };
 

@@ -8,6 +8,20 @@
 
 using namespace woh::ito;
 
+namespace {
+
+const ItoDiagnostic& diagnostic_at(const ItoDiagnostics& diagnostics, qsizetype index) {
+    auto it = diagnostics.cbegin();
+
+    for (qsizetype current = 0; current < index; ++current) {
+        ++it;
+    }
+
+    return *it;
+}
+
+} // namespace
+
 TEST(ItoParserTests, ParseTextParsesSectionsAndFields) {
     const ItoParser parser;
     const QString input = QStringLiteral("[Main]\n"
@@ -57,9 +71,12 @@ TEST(ItoParserTests, ParseTextReportsFieldOutsideSection) {
     const ItoParseResult result = parser.parse_text(QStringLiteral("k=\"v\""));
 
     ASSERT_FALSE(result.is_ok());
-    ASSERT_EQ(result.errors.size(), 1U);
-    EXPECT_EQ(result.errors[0].line, 1);
-    EXPECT_EQ(result.errors[0].message, QStringLiteral("Field is outside of any section"));
+    ASSERT_EQ(result.diagnostics.size(), 1U);
+    const ItoDiagnostic& diagnostic = diagnostic_at(result.diagnostics, 0);
+    EXPECT_EQ(diagnostic.location.line, 1);
+    EXPECT_EQ(diagnostic.message, QStringLiteral("Field is outside of any section"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic.code),
+              ItoParserDiagnosticCode::field_outside_section);
 }
 
 TEST(ItoParserTests, ParseTextReportsEmptySectionName) {
@@ -67,11 +84,17 @@ TEST(ItoParserTests, ParseTextReportsEmptySectionName) {
     const ItoParseResult result = parser.parse_text(QStringLiteral("[   ]\nkey=\"v\""));
 
     ASSERT_FALSE(result.is_ok());
-    ASSERT_EQ(result.errors.size(), 2U);
-    EXPECT_EQ(result.errors[0].line, 1);
-    EXPECT_EQ(result.errors[0].message, QStringLiteral("Empty section name"));
-    EXPECT_EQ(result.errors[1].line, 2);
-    EXPECT_EQ(result.errors[1].message, QStringLiteral("Field is outside of any section"));
+    ASSERT_EQ(result.diagnostics.size(), 2U);
+    const ItoDiagnostic& first = diagnostic_at(result.diagnostics, 0);
+    const ItoDiagnostic& second = diagnostic_at(result.diagnostics, 1);
+    EXPECT_EQ(first.location.line, 1);
+    EXPECT_EQ(first.message, QStringLiteral("Empty section name"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(first.code),
+              ItoParserDiagnosticCode::empty_section_name);
+    EXPECT_EQ(second.location.line, 2);
+    EXPECT_EQ(second.message, QStringLiteral("Field is outside of any section"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(second.code),
+              ItoParserDiagnosticCode::field_outside_section);
 }
 
 TEST(ItoParserTests, ParseTextReportsFieldSyntaxErrors) {
@@ -86,18 +109,32 @@ TEST(ItoParserTests, ParseTextReportsFieldSyntaxErrors) {
     const ItoParseResult result = parser.parse_text(input);
 
     ASSERT_FALSE(result.is_ok());
-    ASSERT_EQ(result.errors.size(), 5U);
-    EXPECT_EQ(result.errors[0].line, 2);
-    EXPECT_EQ(result.errors[0].message, QStringLiteral("Expected key=\"value\""));
-    EXPECT_EQ(result.errors[1].line, 3);
-    EXPECT_EQ(result.errors[1].message, QStringLiteral("Field key is empty"));
-    EXPECT_EQ(result.errors[2].line, 4);
-    EXPECT_EQ(result.errors[2].message, QStringLiteral("Field value must be quoted"));
-    EXPECT_EQ(result.errors[3].line, 5);
-    EXPECT_EQ(result.errors[3].message, QStringLiteral("Unescaped quote inside field value"));
-    EXPECT_EQ(result.errors[4].line, 6);
-    EXPECT_EQ(result.errors[4].message,
+    ASSERT_EQ(result.diagnostics.size(), 5U);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 0).location.line, 2);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 0).message,
+              QStringLiteral("Expected key=\"value\""));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 0).code),
+              ItoParserDiagnosticCode::expected_key_value);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 1).location.line, 3);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 1).message,
+              QStringLiteral("Field key is empty"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 1).code),
+              ItoParserDiagnosticCode::empty_field_key);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 2).location.line, 4);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 2).message,
+              QStringLiteral("Field value must be quoted"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 2).code),
+              ItoParserDiagnosticCode::value_must_be_quoted);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 3).location.line, 5);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 3).message,
+              QStringLiteral("Unescaped quote inside field value"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 3).code),
+              ItoParserDiagnosticCode::unescaped_quote);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 4).location.line, 6);
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 4).message,
               QStringLiteral("Unterminated escape sequence in field value"));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 4).code),
+              ItoParserDiagnosticCode::unterminated_escape);
 }
 
 TEST(ItoParserTests, ParseFileReadsUtf8Content) {
@@ -128,8 +165,11 @@ TEST(ItoParserTests, ParseFileReturnsErrorWhenFileCannotBeOpened) {
     const ItoParseResult result = parser.parse_file(missing_file);
 
     ASSERT_FALSE(result.is_ok());
-    ASSERT_EQ(result.errors.size(), 1U);
-    EXPECT_EQ(result.errors[0].line, 0);
-    EXPECT_TRUE(result.errors[0].message.startsWith(QStringLiteral("Failed to open file: ")));
-    EXPECT_TRUE(result.errors[0].message.endsWith(missing_file));
+    ASSERT_EQ(result.diagnostics.size(), 1U);
+    const ItoDiagnostic& diagnostic = diagnostic_at(result.diagnostics, 0);
+    EXPECT_EQ(diagnostic.location.line, 0);
+    EXPECT_TRUE(diagnostic.message.startsWith(QStringLiteral("Failed to open file: ")));
+    EXPECT_TRUE(diagnostic.message.endsWith(missing_file));
+    EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic.code),
+              ItoParserDiagnosticCode::file_open_failed);
 }
