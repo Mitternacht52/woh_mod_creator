@@ -111,11 +111,13 @@ TEST(ItoParserTests, ParseTextReportsFieldSyntaxErrors) {
     ASSERT_FALSE(result.is_ok());
     ASSERT_EQ(result.diagnostics.size(), 5U);
     EXPECT_EQ(diagnostic_at(result.diagnostics, 0).location.line, 2);
-    EXPECT_EQ(diagnostic_at(result.diagnostics, 0).message, QStringLiteral("Expected key=\"value\""));
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 0).message,
+              QStringLiteral("Expected key=\"value\""));
     EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 0).code),
               ItoParserDiagnosticCode::expected_key_value);
     EXPECT_EQ(diagnostic_at(result.diagnostics, 1).location.line, 3);
-    EXPECT_EQ(diagnostic_at(result.diagnostics, 1).message, QStringLiteral("Field key is empty"));
+    EXPECT_EQ(diagnostic_at(result.diagnostics, 1).message,
+              QStringLiteral("Field key is empty"));
     EXPECT_EQ(std::get<ItoParserDiagnosticCode>(diagnostic_at(result.diagnostics, 1).code),
               ItoParserDiagnosticCode::empty_field_key);
     EXPECT_EQ(diagnostic_at(result.diagnostics, 2).location.line, 4);

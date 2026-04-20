@@ -40,8 +40,7 @@ void ItoWriter::collect_field_diagnostics(const ItoField& field, qsizetype secti
     }
 
     diagnostics.add(ItoDiagnosticSeverity::error, ItoDiagnosticSource::writer,
-                    ItoWriterDiagnosticCode::empty_field_key,
-                    QStringLiteral("Field key is empty"),
+                    ItoWriterDiagnosticCode::empty_field_key, QStringLiteral("Field key is empty"),
                     ItoDiagnosticLocation{
                         .section_index = section_index,
                         .field_index = field_index,

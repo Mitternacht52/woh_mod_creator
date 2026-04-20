@@ -44,8 +44,7 @@ QString ItoParser::parse_section_name(QStringView line) {
 }
 
 bool ItoParser::parse_quoted_value(QStringView value, QString& out_value,
-                                   ItoParserDiagnosticCode& error_code,
-                                   QString& error_message) {
+                                   ItoParserDiagnosticCode& error_code, QString& error_message) {
     const QStringView trimmed_value = trim_view(value);
 
     if (trimmed_value.size() < 2 || trimmed_value.front() != u'"' || trimmed_value.back() != u'"') {
