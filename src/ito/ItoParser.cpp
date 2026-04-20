@@ -5,11 +5,13 @@
 
 namespace woh::ito {
 
-void ItoParser::add_error(ItoParseResult& result, qsizetype line, QString message) {
-    result.errors.push_back(ItoParseError{
-        .line = line,
-        .message = std::move(message),
-    });
+void ItoParser::add_error(ItoParseResult& result, qsizetype line, ItoParserDiagnosticCode code,
+                          QString message) {
+    result.diagnostics.add(ItoDiagnosticSeverity::error, ItoDiagnosticSource::parser, code,
+                           std::move(message),
+                           ItoDiagnosticLocation{
+                               .line = line,
+                           });
 }
 
 QString ItoParser::normalize_text(QStringView text) {
@@ -41,10 +43,13 @@ QString ItoParser::parse_section_name(QStringView line) {
     return trim_view(line.sliced(1, line.size() - 2)).toString();
 }
 
-bool ItoParser::parse_quoted_value(QStringView value, QString& out_value, QString& error_message) {
+bool ItoParser::parse_quoted_value(QStringView value, QString& out_value,
+                                   ItoParserDiagnosticCode& error_code,
+                                   QString& error_message) {
     const QStringView trimmed_value = trim_view(value);
 
     if (trimmed_value.size() < 2 || trimmed_value.front() != u'"' || trimmed_value.back() != u'"') {
+        error_code = ItoParserDiagnosticCode::value_must_be_quoted;
         error_message = QStringLiteral("Field value must be quoted");
         return false;
     }
@@ -75,6 +80,7 @@ bool ItoParser::parse_quoted_value(QStringView value, QString& out_value, QStrin
         }
 
         if (ch == u'"') {
+            error_code = ItoParserDiagnosticCode::unescaped_quote;
             error_message = QStringLiteral("Unescaped quote inside field value");
             return false;
         }
@@ -83,6 +89,7 @@ bool ItoParser::parse_quoted_value(QStringView value, QString& out_value, QStrin
     }
 
     if (is_escaped) {
+        error_code = ItoParserDiagnosticCode::unterminated_escape;
         error_message = QStringLiteral("Unterminated escape sequence in field value");
         return false;
     }
@@ -94,7 +101,8 @@ std::optional<ItoField> ItoParser::parse_field_line(QStringView line, qsizetype 
                                                     ItoParseResult& result) {
     const qsizetype equal_pos = line.indexOf(u'=');
     if (equal_pos < 0) {
-        add_error(result, line_number, QStringLiteral("Expected key=\"value\""));
+        add_error(result, line_number, ItoParserDiagnosticCode::expected_key_value,
+                  QStringLiteral("Expected key=\"value\""));
         return std::nullopt;
     }
 
@@ -102,14 +110,16 @@ std::optional<ItoField> ItoParser::parse_field_line(QStringView line, qsizetype 
     const QStringView value_view = line.sliced(equal_pos + 1);
 
     if (key_view.isEmpty()) {
-        add_error(result, line_number, QStringLiteral("Field key is empty"));
+        add_error(result, line_number, ItoParserDiagnosticCode::empty_field_key,
+                  QStringLiteral("Field key is empty"));
         return std::nullopt;
     }
 
     QString parsed_value;
+    ItoParserDiagnosticCode error_code = ItoParserDiagnosticCode::value_must_be_quoted;
     QString error_message;
-    if (!parse_quoted_value(value_view, parsed_value, error_message)) {
-        add_error(result, line_number, std::move(error_message));
+    if (!parse_quoted_value(value_view, parsed_value, error_code, error_message)) {
+        add_error(result, line_number, error_code, std::move(error_message));
         return std::nullopt;
     }
 
@@ -124,7 +134,8 @@ ItoParseResult ItoParser::parse_file(const QString& file_path) const {
 
     QFile file(file_path);
     if (!file.open(QIODevice::ReadOnly)) {
-        add_error(result, 0, QStringLiteral("Failed to open file: %1").arg(file_path));
+        add_error(result, 0, ItoParserDiagnosticCode::file_open_failed,
+                  QStringLiteral("Failed to open file: %1").arg(file_path));
         return result;
     }
 
@@ -156,7 +167,8 @@ ItoParseResult ItoParser::parse_text(QStringView text) const {
             if (is_section_line(line)) {
                 const QString section_name = parse_section_name(line);
                 if (section_name.isEmpty()) {
-                    add_error(result, line_number, QStringLiteral("Empty section name"));
+                    add_error(result, line_number, ItoParserDiagnosticCode::empty_section_name,
+                              QStringLiteral("Empty section name"));
                     current_section = nullptr;
                 } else {
                     result.document.sections.push_back(ItoSection{
@@ -168,7 +180,7 @@ ItoParseResult ItoParser::parse_text(QStringView text) const {
                 }
             } else {
                 if (current_section == nullptr) {
-                    add_error(result, line_number,
+                    add_error(result, line_number, ItoParserDiagnosticCode::field_outside_section,
                               QStringLiteral("Field is outside of any section"));
                 } else {
                     std::optional<ItoField> field = parse_field_line(line, line_number, result);

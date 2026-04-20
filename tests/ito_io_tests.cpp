@@ -133,3 +133,44 @@ TEST(ItoIoTests, WriteFileThenReadFileRoundTripPreservesDocument) {
     ASSERT_TRUE(parse_result.is_ok());
     expect_documents_equal(parse_result.document, document);
 }
+
+TEST(ItoIoTests, WriteTextSkipsInvalidSectionsUsingDiagnosticsChecks) {
+    const ItoWriter writer;
+    const ItoDocument document{
+        .sections =
+            {
+                ItoSection{
+                    .name = QStringLiteral("Valid"),
+                    .fields =
+                        {
+                            ItoField{
+                                .key = QStringLiteral("name"),
+                                .value = QStringLiteral("Alice"),
+                            },
+                        },
+                },
+                ItoSection{
+                    .name = {},
+                    .fields =
+                        {
+                            ItoField{
+                                .key = QStringLiteral("ignored"),
+                                .value = QStringLiteral("value"),
+                            },
+                        },
+                },
+                ItoSection{
+                    .name = QStringLiteral("BrokenField"),
+                    .fields =
+                        {
+                            ItoField{
+                                .key = {},
+                                .value = QStringLiteral("value"),
+                            },
+                        },
+                },
+            },
+    };
+
+    EXPECT_EQ(writer.write_text(document), QStringLiteral("[Valid]\nname=\"Alice\""));
+}

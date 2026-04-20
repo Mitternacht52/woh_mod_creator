@@ -4,6 +4,51 @@
 
 namespace woh::ito {
 
+void ItoWriter::collect_section_diagnostics(const ItoSection& section, qsizetype section_index,
+                                            ItoDiagnostics& diagnostics) {
+    if (section.name.isEmpty()) {
+        diagnostics.add(ItoDiagnosticSeverity::error, ItoDiagnosticSource::writer,
+                        ItoWriterDiagnosticCode::empty_section_name,
+                        QStringLiteral("Section name is empty"),
+                        ItoDiagnosticLocation{
+                            .section_index = section_index,
+                        });
+    }
+
+    if (section.fields.empty()) {
+        diagnostics.add(ItoDiagnosticSeverity::error, ItoDiagnosticSource::writer,
+                        ItoWriterDiagnosticCode::empty_section,
+                        QStringLiteral("Section has no fields"),
+                        ItoDiagnosticLocation{
+                            .section_index = section_index,
+                            .section_name = section.name,
+                        });
+    }
+
+    for (qsizetype field_index = 0; field_index < static_cast<qsizetype>(section.fields.size());
+         ++field_index) {
+        collect_field_diagnostics(section.fields[static_cast<std::size_t>(field_index)],
+                                  section_index, field_index, section.name, diagnostics);
+    }
+}
+
+void ItoWriter::collect_field_diagnostics(const ItoField& field, qsizetype section_index,
+                                          qsizetype field_index, QStringView section_name,
+                                          ItoDiagnostics& diagnostics) {
+    if (!field.key.isEmpty()) {
+        return;
+    }
+
+    diagnostics.add(ItoDiagnosticSeverity::error, ItoDiagnosticSource::writer,
+                    ItoWriterDiagnosticCode::empty_field_key,
+                    QStringLiteral("Field key is empty"),
+                    ItoDiagnosticLocation{
+                        .section_index = section_index,
+                        .field_index = field_index,
+                        .section_name = section_name.toString(),
+                    });
+}
+
 QString ItoWriter::write_text(const ItoDocument& document) const {
     QString out;
 
@@ -41,9 +86,8 @@ bool ItoWriter::write_file(const ItoDocument& document, const QString& filepath)
 }
 
 bool ItoWriter::should_write_section(const ItoSection& section) noexcept {
-    if (!section.is_valid() || section.fields.empty()) {
-        return false;
-    }
+    ItoDiagnostics diagnostics;
+    collect_section_diagnostics(section, -1, diagnostics);
 
     for (const auto& field : section.fields) {
         if (!should_write_field(field)) {
@@ -51,11 +95,13 @@ bool ItoWriter::should_write_section(const ItoSection& section) noexcept {
         }
     }
 
-    return true;
+    return !diagnostics.has_errors();
 }
 
 bool ItoWriter::should_write_field(const ItoField& field) noexcept {
-    return field.is_valid();
+    ItoDiagnostics diagnostics;
+    collect_field_diagnostics(field, -1, -1, {}, diagnostics);
+    return !diagnostics.has_errors();
 }
 
 void ItoWriter::write_section(QString& out, const ItoSection& section) {
