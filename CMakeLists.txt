@@ -35,6 +35,7 @@ endif()
 add_subdirectory(src/app)
 add_subdirectory(src/core)
 add_subdirectory(src/ito)
+add_subdirectory(src/mods)
 
 if (BUILD_TESTS) 
     enable_testing()
