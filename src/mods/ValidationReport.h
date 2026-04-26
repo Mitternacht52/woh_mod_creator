@@ -8,7 +8,6 @@
 namespace woh::mods {
 
 class ValidationReport {
-
 public:
     void add(const ValidationIssue& issue);
     void add(ValidationSeverity severity, const QString& message, const QString& section = {},

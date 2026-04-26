@@ -6,8 +6,15 @@ add_library(woh_mods STATIC
 	ValidationReport.cpp
 	ValidationReport.h
 	IModModel.h
+	IModSchema.h
 	ModLoadResult.cpp
 	ModLoadResult.h
+	ModSchemaRegistry.h
+	ModSchemaRegistry.cpp
+	ModClassifier.h
+	ModClassifier.cpp
+	schemas/SectionSignatureSchema.h
+	schemas/SectionSignatureSchema.cpp
 )
 
 target_link_libraries(woh_mods

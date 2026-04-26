@@ -5,7 +5,6 @@
 namespace woh::mods {
 
 class IModModel {
-
 public:
 	virtual ~IModModel() = default;
 
