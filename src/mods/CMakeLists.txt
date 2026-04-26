@@ -15,6 +15,9 @@ add_library(woh_mods STATIC
 	ModClassifier.cpp
 	schemas/SectionSignatureSchema.h
 	schemas/SectionSignatureSchema.cpp
+	models/EnemyModModel.h
+	schemas/EnemySchema.h
+	schemas/EnemySchema.cpp
 )
 
 target_link_libraries(woh_mods
