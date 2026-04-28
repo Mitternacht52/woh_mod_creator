@@ -8,17 +8,17 @@
 namespace woh::mods {
 
 namespace {
-	
-constexpr auto enemy_section = "enemy";
 
-constexpr auto code_missing_section = "mods.enemy.missing_section";
-constexpr auto code_duplicate_section = "mods.enemy.duplicate_section";
-constexpr auto code_unknown_section = "mods.enemy.unknown_section";
-constexpr auto code_missing_key = "mods.enemy.missing_key";
-constexpr auto code_empty_required_key = "mods.enemy.empty_required_key";
-constexpr auto code_unknown_key = "mods.enemy.unknown_key";
-constexpr auto code_invalid_enum = "mods.enemy.invalid_enum";
-constexpr auto code_invalid_integer = "mods.enemy.invalid_integer";
+const auto enemy_section = QStringLiteral("enemy");
+
+const auto code_missing_section = QStringLiteral("mods.enemy.missing_section");
+const auto code_duplicate_section = QStringLiteral("mods.enemy.duplicate_section");
+const auto code_unknown_section = QStringLiteral("mods.enemy.unknown_section");
+const auto code_missing_key = QStringLiteral("mods.enemy.missing_key");
+const auto code_empty_required_key = QStringLiteral("mods.enemy.empty_required_key");
+const auto code_unknown_key = QStringLiteral("mods.enemy.unknown_key");
+const auto code_invalid_enum = QStringLiteral("mods.enemy.invalid_enum");
+const auto code_invalid_integer = QStringLiteral("mods.enemy.invalid_integer");
 
 const QSet<QString>& required_keys() {
 	static const QSet<QString> keys = {
@@ -122,7 +122,7 @@ int count_enemy_sections(const woh::ito::ItoDocument& document) {
 	int count = 0;
 
 	for (const auto& section : document.sections) {
-		if (section.name == QStringLiteral(enemy_section)) {
+		if (section.name == enemy_section) {
 			++count;
 		}
 	}
@@ -131,7 +131,7 @@ int count_enemy_sections(const woh::ito::ItoDocument& document) {
 }
 
 const woh::ito::ItoSection* find_enemy_section(const woh::ito::ItoDocument& document) {
-    return document.find_section(QStringLiteral(enemy_section));
+    return document.find_section(enemy_section);
 }
 
 const woh::ito::ItoField* find_field(const woh::ito::ItoSection& section, QStringView key) {
@@ -157,12 +157,12 @@ void validate_unknown_sections(
     ValidationReport& report
 ) {
     for (const auto& section : document.sections) {
-        if (section.name != QStringLiteral(enemy_section)) {
+        if (section.name != enemy_section) {
             report.add_error(
                 QStringLiteral("Unknown section '%1' in enemy mod").arg(section.name),
                 section.name,
                 {},
-                QStringLiteral(code_unknown_section)
+                code_unknown_section
             );
         }
     }
@@ -175,9 +175,9 @@ void validate_duplicate_enemy_section(
     if (count_enemy_sections(document) > 1) {
         report.add_error(
             QStringLiteral("Duplicate [enemy] section"),
-            QStringLiteral(enemy_section),
+            enemy_section,
             {},
-            QStringLiteral(code_duplicate_section)
+            code_duplicate_section
         );
     }
 }
@@ -190,9 +190,9 @@ void validate_unknown_keys(
         if (!allowed_keys().contains(field.key)) {
             report.add_error(
                 QStringLiteral("Unknown key '%1' in [enemy] section").arg(field.key),
-                QStringLiteral(enemy_section),
+                enemy_section,
                 field.key,
-                QStringLiteral(code_unknown_key)
+                code_unknown_key
             );
         }
     }
@@ -209,9 +209,9 @@ void validate_required_key(
     if (field == nullptr) {
         report.add_error(
             QStringLiteral("Missing required key '%1'").arg(key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_missing_key)
+            code_missing_key
         );
 
         return;
@@ -220,9 +220,9 @@ void validate_required_key(
     if (field->value.isEmpty()) {
         report.add_error(
             QStringLiteral("Required key '%1' must not be empty").arg(key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_empty_required_key)
+            code_empty_required_key
         );
     }
 }
@@ -252,9 +252,9 @@ void validate_enum_value(
     if (field->value.isEmpty()) {
         report.add_error(
             QStringLiteral("Enum key '%1' must not be empty").arg(key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_invalid_enum)
+            code_invalid_enum
         );
 
         return;
@@ -264,9 +264,9 @@ void validate_enum_value(
         report.add_error(
             QStringLiteral("Invalid enum value '%1' for key '%2'")
             .arg(field->value, key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_invalid_enum)
+            code_invalid_enum
         );
     }
 }
@@ -286,9 +286,9 @@ void validate_integer_value(
     if (field->value.isEmpty()) {
         report.add_error(
             QStringLiteral("Integer key '%1' must not be empty").arg(key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_invalid_integer)
+            code_invalid_integer
         );
 
         return;
@@ -301,9 +301,9 @@ void validate_integer_value(
         report.add_error(
             QStringLiteral("Invalid integer value '%1' for key '%2'")
             .arg(field->value, key_string),
-            QStringLiteral(enemy_section),
+            enemy_section,
             key_string,
-            QStringLiteral(code_invalid_integer)
+            code_invalid_integer
         );
     }
 }
@@ -340,7 +340,7 @@ QString EnemySchema::display_name() const {
 }
 
 bool EnemySchema::matches_signature(const woh::ito::ItoDocument& document) const {
-    return document.has_section(QStringLiteral(enemy_section));
+    return document.has_section(enemy_section);
 }
 
 ValidationReport EnemySchema::validate(const woh::ito::ItoDocument& document) const {
@@ -354,9 +354,9 @@ ValidationReport EnemySchema::validate(const woh::ito::ItoDocument& document) co
     if (section == nullptr) {
         report.add_error(
             QStringLiteral("Missing required [enemy] section"),
-            QStringLiteral(enemy_section),
+            enemy_section,
             {},
-            QStringLiteral(code_missing_section)
+            code_missing_section
         );
 
         return report;

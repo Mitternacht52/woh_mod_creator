@@ -9,21 +9,21 @@ namespace woh::mods {
 
 namespace {
 
-constexpr auto event_section = "event";
+const auto event_section = QStringLiteral("event");
 
-constexpr auto code_missing_section = "mods.event.missing_section";
-constexpr auto code_duplicate_section = "mods.event.duplicate_section";
-constexpr auto code_unknown_section = "mods.event.unknown_section";
-constexpr auto code_missing_key = "mods.event.missing_key";
-constexpr auto code_empty_required_key = "mods.event.empty_required_key";
-constexpr auto code_unknown_key = "mods.event.unknown_key";
-constexpr auto code_invalid_enum = "mods.event.invalid_enum";
-constexpr auto code_invalid_integer = "mods.event.invalid_integer";
-constexpr auto code_invalid_decimal = "mods.event.invalid_decimal";
-constexpr auto code_forbidden_option_block = "mods.event.forbidden_option_block";
-constexpr auto code_invalid_option_count = "mods.event.invalid_option_count";
-constexpr auto code_invalid_prize_payload = "mods.event.invalid_prize_payload";
-constexpr auto code_invalid_extra_prize_payload = "mods.event.invalid_extra_prize_payload";
+const auto code_missing_section = QStringLiteral("mods.event.missing_section");
+const auto code_duplicate_section = QStringLiteral("mods.event.duplicate_section");
+const auto code_unknown_section = QStringLiteral("mods.event.unknown_section");
+const auto code_missing_key = QStringLiteral("mods.event.missing_key");
+const auto code_empty_required_key = QStringLiteral("mods.event.empty_required_key");
+const auto code_unknown_key = QStringLiteral("mods.event.unknown_key");
+const auto code_invalid_enum = QStringLiteral("mods.event.invalid_enum");
+const auto code_invalid_integer = QStringLiteral("mods.event.invalid_integer");
+const auto code_invalid_decimal = QStringLiteral("mods.event.invalid_decimal");
+const auto code_forbidden_option_block = QStringLiteral("mods.event.forbidden_option_block");
+const auto code_invalid_option_count = QStringLiteral("mods.event.invalid_option_count");
+const auto code_invalid_prize_payload = QStringLiteral("mods.event.invalid_prize_payload");
+const auto code_invalid_extra_prize_payload = QStringLiteral("mods.event.invalid_extra_prize_payload");
 
 const QStringList& required_non_empty_base_keys() {
 	static const QStringList keys = {
@@ -280,7 +280,7 @@ int count_event_sections(const woh::ito::ItoDocument& document) {
 	int count = 0;
 
 	for (const auto& section : document.sections) {
-		if (section.name == QStringLiteral(event_section)) {
+		if (section.name == event_section) {
 			++count;
 		}
 	}
@@ -289,7 +289,7 @@ int count_event_sections(const woh::ito::ItoDocument& document) {
 }
 
 const woh::ito::ItoSection* find_event_section(const woh::ito::ItoDocument& document) {
-	return document.find_section(QStringLiteral(event_section));
+	return document.find_section(event_section);
 }
 
 const woh::ito::ItoField* find_field(const woh::ito::ItoSection& section, QStringView key) {
@@ -335,12 +335,12 @@ void validate_unknown_sections(
 	ValidationReport& report
 ) {
 	for (const auto& section : document.sections) {
-		if (section.name != QStringLiteral(event_section)) {
+		if (section.name != event_section) {
 			report.add_error(
 				QStringLiteral("Unknown section '%1' in event mod").arg(section.name),
 				section.name,
 				{},
-				QStringLiteral(code_unknown_section)
+				code_unknown_section
 			);
 		}
 	}
@@ -353,9 +353,9 @@ void validate_duplicate_event_section(
 	if (count_event_sections(document) > 1) {
 		report.add_error(
 			QStringLiteral("Duplicate [event] section"),
-			QStringLiteral(event_section),
+			event_section,
 			{},
-			QStringLiteral(code_duplicate_section)
+			code_duplicate_section
 		);
 	}
 }
@@ -368,9 +368,9 @@ void validate_unknown_keys(
 		if (!allowed_keys().contains(field.key)) {
 			report.add_error(
 				QStringLiteral("Unknown key '%1' in [event] section").arg(field.key),
-				QStringLiteral(event_section),
+				event_section,
 				field.key,
-				QStringLiteral(code_unknown_key)
+				code_unknown_key
 			);
 		}
 	}
@@ -389,9 +389,9 @@ void validate_required_key_presence(
 
 	report.add_error(
 		QStringLiteral("Missing required key '%1'").arg(key_string),
-		QStringLiteral(event_section),
+		event_section,
 		key_string,
-		QStringLiteral(code_missing_key)
+		code_missing_key
 	);
 }
 
@@ -406,9 +406,9 @@ void validate_required_key_non_empty(
 	if (field == nullptr) {
 		report.add_error(
 			QStringLiteral("Missing required key '%1'").arg(key_string),
-			QStringLiteral(event_section),
+			event_section,
 			key_string,
-			QStringLiteral(code_missing_key)
+			code_missing_key
 		);
 
 		return;
@@ -417,9 +417,9 @@ void validate_required_key_non_empty(
 	if (field->value.isEmpty()) {
 		report.add_error(
 			QStringLiteral("Required key '%1' must not be empty").arg(key_string),
-			QStringLiteral(event_section),
+			event_section,
 			key_string,
-			QStringLiteral(code_empty_required_key)
+			code_empty_required_key
 		);
 	}
 }
@@ -455,9 +455,9 @@ void validate_enum_value(
         if (!allow_empty) {
             report.add_error(
                 QStringLiteral("Enum key '%1' must not be empty").arg(key_string),
-                QStringLiteral(event_section),
+                event_section,
                 key_string,
-                QStringLiteral(code_invalid_enum)
+                code_invalid_enum
             );
         }
 
@@ -468,9 +468,9 @@ void validate_enum_value(
         report.add_error(
             QStringLiteral("Invalid enum value '%1' for key '%2'")
             .arg(field->value, key_string),
-            QStringLiteral(event_section),
+            event_section,
             key_string,
-            QStringLiteral(code_invalid_enum)
+            code_invalid_enum
         );
     }
 }
@@ -514,9 +514,9 @@ void validate_options_value(
     if (!option_counts().contains(field->value)) {
         report.add_error(
             QStringLiteral("Invalid option count '%1'").arg(field->value),
-            QStringLiteral(event_section),
+            event_section,
             QStringLiteral("options"),
-            QStringLiteral(code_invalid_option_count)
+            code_invalid_option_count
         );
     }
 }
@@ -534,9 +534,9 @@ void validate_forbidden_option_block(
         report.add_error(
             QStringLiteral("Option block '%1' is forbidden by options value")
             .arg(QString(suffix)),
-            QStringLiteral(event_section),
+            event_section,
             key,
-            QStringLiteral(code_forbidden_option_block)
+            code_forbidden_option_block
         );
     }
 }
@@ -581,9 +581,9 @@ void validate_prize_payload(
             report.add_error(
                 QStringLiteral("Prize '%1' requires integer payload in '%2'")
                 .arg(prize, payload_key_string),
-                QStringLiteral(event_section),
+                event_section,
                 payload_key_string,
-                QStringLiteral(code_invalid_prize_payload)
+                code_invalid_prize_payload
             );
         }
 
@@ -595,9 +595,9 @@ void validate_prize_payload(
             report.add_error(
                 QStringLiteral("Prize 'item' requires item name in '%1'")
                 .arg(payload_key_string),
-                QStringLiteral(event_section),
+                event_section,
                 payload_key_string,
-                QStringLiteral(code_invalid_prize_payload)
+                code_invalid_prize_payload
             );
         }
 
@@ -613,9 +613,9 @@ void validate_prize_payload(
             report.add_error(
                 QStringLiteral("Prize 'itempool' has invalid payload '%1' in '%2'")
                 .arg(payload, payload_key_string),
-                QStringLiteral(event_section),
+                event_section,
                 payload_key_string,
-                QStringLiteral(code_invalid_prize_payload)
+                code_invalid_prize_payload
             );
         }
 
@@ -647,9 +647,9 @@ void validate_extra_prize_payload(
             report.add_error(
                 QStringLiteral("Extra prize number '%1' is set without '%2'")
                 .arg(number_key_string, prize_key_string),
-                QStringLiteral(event_section),
+                event_section,
                 number_key_string,
-                QStringLiteral(code_invalid_extra_prize_payload)
+                code_invalid_extra_prize_payload
             );
         }
 
@@ -660,9 +660,9 @@ void validate_extra_prize_payload(
         report.add_error(
             QStringLiteral("Invalid extra prize value '%1' for key '%2'")
             .arg(prize, prize_key_string),
-            QStringLiteral(event_section),
+            event_section,
             prize_key_string,
-            QStringLiteral(code_invalid_enum)
+            code_invalid_enum
         );
 
         return;
@@ -672,9 +672,9 @@ void validate_extra_prize_payload(
         report.add_error(
             QStringLiteral("Extra prize '%1' requires integer payload in '%2'")
             .arg(prize, number_key_string),
-            QStringLiteral(event_section),
+            event_section,
             number_key_string,
-            QStringLiteral(code_invalid_extra_prize_payload)
+            code_invalid_extra_prize_payload
         );
     }
 }
@@ -751,9 +751,9 @@ void validate_wavy_fields(
     if (wavy_speed->value.isEmpty()) {
         report.add_error(
             QStringLiteral("Decimal key 'wavy_speed' must not be empty"),
-            QStringLiteral(event_section),
+            event_section,
             QStringLiteral("wavy_speed"),
-            QStringLiteral(code_invalid_decimal)
+            code_invalid_decimal
         );
 
         return;
@@ -763,9 +763,9 @@ void validate_wavy_fields(
         report.add_error(
             QStringLiteral("Invalid decimal value '%1' for key 'wavy_speed'")
             .arg(wavy_speed->value),
-            QStringLiteral(event_section),
+            event_section,
             QStringLiteral("wavy_speed"),
-            QStringLiteral(code_invalid_decimal)
+            code_invalid_decimal
         );
     }
 }
@@ -803,7 +803,7 @@ QString EventSchema::display_name() const {
 }
 
 bool EventSchema::matches_signature(const woh::ito::ItoDocument& document) const {
-    return document.has_section(QStringLiteral(event_section));
+    return document.has_section(event_section);
 }
 
 ValidationReport EventSchema::validate(const woh::ito::ItoDocument& document) const {
@@ -817,9 +817,9 @@ ValidationReport EventSchema::validate(const woh::ito::ItoDocument& document) co
     if (section == nullptr) {
         report.add_error(
             QStringLiteral("Missing required [event] section"),
-            QStringLiteral(event_section),
+            event_section,
             {},
-            QStringLiteral(code_missing_section)
+            code_missing_section
         );
 
         return report;
