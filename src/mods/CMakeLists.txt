@@ -13,11 +13,14 @@ add_library(woh_mods STATIC
 	ModSchemaRegistry.cpp
 	ModClassifier.h
 	ModClassifier.cpp
+	models/EnemyModModel.h
+	models/EventModModel.h
 	schemas/SectionSignatureSchema.h
 	schemas/SectionSignatureSchema.cpp
-	models/EnemyModModel.h
 	schemas/EnemySchema.h
 	schemas/EnemySchema.cpp
+	schemas/EventSchema.h
+	schemas/EventSchema.cpp
 )
 
 target_link_libraries(woh_mods
