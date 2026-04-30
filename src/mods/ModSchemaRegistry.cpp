@@ -1,17 +1,14 @@
 #include "ModSchemaRegistry.h"
 
+#include "schemas/SectionSignatureSchema.h"
 #include "schemas/EnemySchema.h"
 #include "schemas/EventSchema.h"
-#include "schemas/SectionSignatureSchema.h"
+#include "schemas/CharacterSchema.h"
 
 namespace woh::mods {
 
 ModSchemaRegistry::ModSchemaRegistry() {
-	m_schemas.push_back(std::make_unique<SectionSignatureSchema>(
-		ModType::character,
-		QStringLiteral("Character"),
-		QStringLiteral("character")
-	));
+	m_schemas.push_back(std::make_unique<CharacterSchema>());
 
 	m_schemas.push_back(std::make_unique<EnemySchema>());
 
