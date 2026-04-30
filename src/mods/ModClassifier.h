@@ -7,14 +7,14 @@
 
 namespace woh::mods {
 
-class ModClassifier {
-public:
-	explicit ModClassifier(const ModSchemaRegistry& registry);
+	class ModClassifier {
+	public:
+		explicit ModClassifier(const ModSchemaRegistry& registry);
 
-	[[nodiscard]] ClassificationResult classify(const woh::ito::ItoDocument& document) const;
+		[[nodiscard]] ClassificationResult classify(const woh::ito::ItoDocument& document) const;
 
-private:
-	const ModSchemaRegistry& m_registry;
-};
+	private:
+		const ModSchemaRegistry& m_registry;
+	};
 
-} //namespace woh::mods
+} // namespace woh::mods

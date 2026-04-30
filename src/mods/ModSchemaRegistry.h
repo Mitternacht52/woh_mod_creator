@@ -9,15 +9,15 @@
 
 namespace woh::mods {
 
-class ModSchemaRegistry {
-public:
-	ModSchemaRegistry();
+	class ModSchemaRegistry {
+	public:
+		ModSchemaRegistry();
 
-	[[nodiscard]] const QList<std::unique_ptr<IModSchema>>& schemas() const;
-	[[nodiscard]] const IModSchema* schema_for(ModType type) const;
+		[[nodiscard]] const QList<std::unique_ptr<IModSchema>>& schemas() const;
+		[[nodiscard]] const IModSchema* schema_for(ModType type) const;
 
-private:
-	QList<std::unique_ptr<IModSchema>> m_schemas;
-};
+	private:
+		QList<std::unique_ptr<IModSchema>> m_schemas;
+	};
 
-} //namespace woh::mods
+} // namespace woh::mods
