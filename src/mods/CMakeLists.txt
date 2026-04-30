@@ -16,6 +16,7 @@ add_library(woh_mods STATIC
 	models/EnemyModModel.h
 	models/EventModModel.h
 	models/CharacterModModel.h
+	models/MysteryModModel.h
 	schemas/SectionSignatureSchema.h
 	schemas/SectionSignatureSchema.cpp
 	schemas/EnemySchema.h
@@ -24,7 +25,7 @@ add_library(woh_mods STATIC
 	schemas/EventSchema.cpp
 	schemas/CharacterSchema.h
 	schemas/CharacterSchema.cpp
-)
+ )
 
 target_link_libraries(woh_mods
 	PUBLIC
