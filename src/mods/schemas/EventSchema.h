@@ -2,8 +2,6 @@
 
 #include "mods/IModSchema.h"
 
-#include <memory>
-
 namespace woh::mods {
 
 	class EventSchema final : public IModSchema {

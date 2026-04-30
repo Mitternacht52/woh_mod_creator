@@ -7,11 +7,11 @@
 namespace woh::mods {
 
 	struct MysteryIntroBlock {
-		QString mystery;
-		QString stage;
+		QString art;
 		QString text_one;
 		QString text_two;
 		QString text_thr;
+		QString text_fou;
 	};
 
 	struct MysteryProgressStep {
@@ -45,19 +45,17 @@ namespace woh::mods {
 		QString forest;
 		QString village;
 		QString apartment;
-		// если в гайде/версии игры есть extra locations, их можно добавить позже
 	};
 
 	struct MysteryCardBlock {
-		QString title;
-		QString desc;
-		QString mystery;
+		QString name;
+		QString trigger;
 		QString art;
-
-		QString effect_a;
+		QString flavor;
+		QString tags;
+		QString a_effect;
 		QString a_value;
-
-		QString effect_b;
+		QString b_effect;
 		QString b_value;
 	};
 
@@ -72,6 +70,9 @@ namespace woh::mods {
 
 	struct MysteryBigEndingBlock {
 		QString end_txt;
+		QString end_txta;
+		QString end_txtb;
+		QString end_txtc;
 	};
 
 	struct MysteryModModel final : public IModModel {
@@ -82,19 +83,11 @@ namespace woh::mods {
 		// [mystery]
 		QString name;
 		QString author;
-		QString contact;
-		QString desc;
-		QString intro;
-		QString mystery;
-		QString can_restart;
-		QString oldgod;
-		QString background;
-		QString ending;
-		QString combat;
-		QString trigger;
-		QString trigger_exp;
-		QString trigger_effect;
-		QString music;
+		QString art;
+		QString description;
+		QString custom_ui;
+		QString mystery_sound;
+		QString combat_sound;
 
 		// [intro]
 		MysteryIntroBlock intro_block;
