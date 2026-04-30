@@ -96,15 +96,20 @@ namespace woh::mods {
 		MysteryProgressBlock progress;
 
 		// optional [restricted_locations]
+		bool has_restricted_locations = false;
 		MysteryRestrictedLocationsBlock restricted_locations;
 
 		// optional [card_a], [card_b]
+		bool has_card_a = false;
 		MysteryCardBlock card_a;
+		bool has_card_b = false;
 		MysteryCardBlock card_b;
 
 		// endings
 		MysteryEndingBlock ending_a;
+		bool has_ending_b = false;
 		MysteryEndingBlock ending_b;
+		bool has_ending_c = false;
 		MysteryEndingBlock ending_c;
 		MysteryBigEndingBlock big_ending;
 	};

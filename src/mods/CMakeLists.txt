@@ -25,7 +25,9 @@ add_library(woh_mods STATIC
 	schemas/EventSchema.cpp
 	schemas/CharacterSchema.h
 	schemas/CharacterSchema.cpp
- )
+	schemas/MysterySchema.h
+	schemas/MysterySchema.cpp
+)
 
 target_link_libraries(woh_mods
 	PUBLIC
