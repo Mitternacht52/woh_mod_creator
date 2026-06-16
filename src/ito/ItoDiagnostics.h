@@ -78,6 +78,9 @@ struct ItoDiagnostics {
     using iterator = container_type::iterator;
     using const_iterator = container_type::const_iterator;
 
+    [[nodiscrad]] QString first_error_message() const;
+    [[nodiscard]] QString summary(std::size_t max_items = 3) const;
+
     void add(ItoDiagnostic diagnostic);
     void add(ItoDiagnosticSeverity severity, ItoDiagnosticSource source, ItoDiagnosticCode code,
              QString message, ItoDiagnosticLocation location = {});
